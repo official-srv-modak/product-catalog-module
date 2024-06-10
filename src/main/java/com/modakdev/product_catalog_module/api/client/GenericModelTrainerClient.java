@@ -1,7 +1,6 @@
 package com.modakdev.product_catalog_module.api.client;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,13 +21,25 @@ public class GenericModelTrainerClient {
         this.baseUrl = baseUrl;
     }
 
-    public Object getSingleQueryResponse(int pid){
+    public Object getSingleProduct(int pid){
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         String requestUrl = UriComponentsBuilder.fromHttpUrl(baseUrl)
                 .path("/get-product")
                 .queryParam("id", pid)
+                .toUriString();
+
+        ResponseEntity<Object> response = restTemplate.getForEntity(requestUrl, Object.class);
+        return response.getBody();
+    }
+
+    public Object getAllProducts(){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        String requestUrl = UriComponentsBuilder.fromHttpUrl(baseUrl)
+                .path("/get-all-products")
                 .toUriString();
 
         ResponseEntity<Object> response = restTemplate.getForEntity(requestUrl, Object.class);

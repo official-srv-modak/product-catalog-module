@@ -1,6 +1,7 @@
 package com.modakdev.product_catalog_module.api.controller;
 
 import com.modakdev.product_catalog_module.api.service.impl.ProductServiceImpl;
+import com.modakdev.response.MultipleProductResponse;
 import com.modakdev.response.SingleProductResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,12 @@ public class ProductController {
     @GetMapping("/get-product/{id}")
     public SingleProductResponse getProduct(@PathVariable int id) {
         SingleProductResponse response = productService.getProduct(id);
+        return response;
+    }
+
+    @GetMapping("/get-all-products")
+    public MultipleProductResponse getAllProducts() {
+        MultipleProductResponse response = productService.getAllProducts();
         return response;
     }
 }
