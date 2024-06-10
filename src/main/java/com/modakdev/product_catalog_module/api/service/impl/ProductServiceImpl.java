@@ -67,6 +67,9 @@ public class ProductServiceImpl implements ProductService {
                 JSONObject jsonObject = LibraryFunctions.convertToJSONObject((LinkedHashMap<String, Object>)map);
                 LibraryFunctions.fixLists(jsonObject);
                 Product product = gson.fromJson(jsonObject.toString(), Product.class);
+                if (product.getDescription() == null || product.getDescription().isEmpty()) {
+                    product.setDescription(LibraryFunctions.buildDescription(product.getName()));
+                }
                 products.add(product);
             }
             baseResponse.build(products);
