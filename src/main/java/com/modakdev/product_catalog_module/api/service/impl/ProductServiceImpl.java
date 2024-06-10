@@ -44,6 +44,7 @@ public class ProductServiceImpl implements ProductService {
             if (product.getDescription() == null || product.getDescription().isEmpty()) {
                 product.setDescription(LibraryFunctions.buildDescription(product.getName()));
             }
+            product.setAccuracy(LibraryFunctions.getAccuracyPercentage(product.getAccuracy()));
             baseResponse.build(product);
         }
         catch (Exception e) {
@@ -70,6 +71,7 @@ public class ProductServiceImpl implements ProductService {
                 if (product.getDescription() == null || product.getDescription().isEmpty()) {
                     product.setDescription(LibraryFunctions.buildDescription(product.getName()));
                 }
+                product.setAccuracy(LibraryFunctions.getAccuracyPercentage(product.getAccuracy()));
                 products.add(product);
             }
             baseResponse.build(products);
