@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/product")
+@RequestMapping("${product.controller.base.path}")
 public class ProductController {
 
     private final ProductServiceImpl productService;
@@ -35,7 +35,7 @@ public class ProductController {
         MultipleProductResponse response = productService.getAllProducts();
         return response;
     }
-    @GetMapping("/get-correlation-matrix-img/{id}")
+    @GetMapping("${correlation.matrix.img-url}")
     public Object getCorrelationPlotImg(@PathVariable int id){
         SingleProductResponse response = productService.getProduct(id);
         if(response.getProduct()!=null)

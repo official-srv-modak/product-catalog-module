@@ -12,6 +12,7 @@ import com.modakdev.response.SingleProductResponse;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,9 @@ public class ProductServiceImpl implements ProductService {
 
     GenericModelTrainerClient client;
 
+    @Value("${correlation.matrix.base-img-url}")
+    String correlationMatrixBaseImageUrl;
+
     @Autowired
     public ProductServiceImpl(GenericModelTrainerClient client) {
         this.client = client;
@@ -42,6 +46,7 @@ public class ProductServiceImpl implements ProductService {
             LibraryFunctions.fixLists(jsonObject);
             Gson gson = new Gson();
             Product product = gson.fromJson(jsonObject.toString(), Product.class);
+            product.setImageUrl(correlationMatrixBaseImageUrl+id);
             baseResponse.setStatus(HttpStatus.OK);
             baseResponse.setMessage("Product found");
             if (product.getDescription() == null || product.getDescription().isEmpty()) {
@@ -74,6 +79,7 @@ public class ProductServiceImpl implements ProductService {
                 if (product.getDescription() == null || product.getDescription().isEmpty()) {
                     product.setDescription(LibraryFunctions.buildDescription(product.getName()));
                 }
+                product.setImageUrl(correlationMatrixBaseImageUrl+product.getId());
                 product.setAccuracy(LibraryFunctions.getAccuracyPercentage(product.getAccuracy()));
                 products.add(product);
             }
