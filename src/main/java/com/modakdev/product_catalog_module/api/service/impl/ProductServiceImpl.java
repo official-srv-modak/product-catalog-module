@@ -12,9 +12,12 @@ import com.modakdev.response.SingleProductResponse;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -48,7 +51,7 @@ public class ProductServiceImpl implements ProductService {
             baseResponse.build(product);
         }
         catch (Exception e) {
-            baseResponse.setMessage("Failed to request " + e.getMessage());
+            baseResponse.setMessage("Product not found " + e.getMessage());
             baseResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         finally {
@@ -84,6 +87,16 @@ public class ProductServiceImpl implements ProductService {
         }
         finally {
             return baseResponse;
+        }
+    }
+
+    @Override
+    public ResponseEntity<InputStreamResource> getCorrelationPlotImg(String modelName, String modelPath) {
+        try {
+            return client.callCorrelationImgPlotApi(modelName, modelPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }
