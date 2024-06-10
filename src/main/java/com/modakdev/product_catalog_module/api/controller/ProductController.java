@@ -17,8 +17,6 @@ public class ProductController {
 
     private final ProductServiceImpl productService;
 
-
-
     @Autowired
     public ProductController(ProductServiceImpl productService) {
         this.productService = productService;

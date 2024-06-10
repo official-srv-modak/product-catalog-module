@@ -7,6 +7,7 @@ import com.modakdev.lib.LibraryFunctions;
 import com.modakdev.model.pojo.Product;
 import com.modakdev.product_catalog_module.api.client.GenericModelTrainerClient;
 import com.modakdev.product_catalog_module.api.service.ProductService;
+import com.modakdev.product_catalog_module.config.ServerIpConfig;
 import com.modakdev.response.MultipleProductResponse;
 import com.modakdev.response.SingleProductResponse;
 import org.json.simple.JSONArray;
@@ -29,17 +30,22 @@ public class ProductServiceImpl implements ProductService {
 
     GenericModelTrainerClient client;
 
+    private final ServerIpConfig serverIpConfig;
+
     @Value("${correlation.matrix.base-img-url}")
     String correlationMatrixBaseImageUrl;
 
     @Autowired
-    public ProductServiceImpl(GenericModelTrainerClient client) {
+    public ProductServiceImpl(GenericModelTrainerClient client, ServerIpConfig serverIpConfig) {
         this.client = client;
+        this.serverIpConfig = serverIpConfig;
     }
 
     @Override
     public SingleProductResponse getProduct(int id) {
+
         SingleProductResponse  baseResponse = new SingleProductResponse();
+        correlationMatrixBaseImageUrl = serverIpConfig.getServerIp()+":"+correlationMatrixBaseImageUrl;
         try{
             Object flaskResponse = client.getSingleProduct(id);
             JSONObject jsonObject = LibraryFunctions.convertToJSONObject((LinkedHashMap<String, Object>)flaskResponse);
@@ -67,6 +73,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public MultipleProductResponse getAllProducts() {
         MultipleProductResponse  baseResponse = new MultipleProductResponse();
+        correlationMatrixBaseImageUrl = serverIpConfig.getServerIp()+":"+correlationMatrixBaseImageUrl;
         try{
             ArrayList flaskResponse = (ArrayList) client.getAllProducts();
             ArrayList<Product> products = new ArrayList<>();
