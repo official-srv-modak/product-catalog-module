@@ -32,8 +32,8 @@ public class ProductServiceImpl implements ProductService {
 
     private final ServerIpConfig serverIpConfig;
 
-    @Value("${correlation.matrix.base-img-url}")
-    String correlationMatrixBaseImageUrl;
+    @Value("${flask.img.base-url}")
+    String flaskImgBaseUrl;
 
     @Autowired
     public ProductServiceImpl(GenericModelTrainerClient client, ServerIpConfig serverIpConfig) {
@@ -45,14 +45,13 @@ public class ProductServiceImpl implements ProductService {
     public SingleProductResponse getProduct(int id) {
 
         SingleProductResponse  baseResponse = new SingleProductResponse();
-        correlationMatrixBaseImageUrl = serverIpConfig.getServerIp()+":"+correlationMatrixBaseImageUrl;
         try{
             Object flaskResponse = client.getSingleProduct(id);
             JSONObject jsonObject = LibraryFunctions.convertToJSONObject((LinkedHashMap<String, Object>)flaskResponse);
             LibraryFunctions.fixLists(jsonObject);
             Gson gson = new Gson();
             Product product = gson.fromJson(jsonObject.toString(), Product.class);
-            product.setImageUrl(correlationMatrixBaseImageUrl+id);
+            product.setImageUrl(flaskImgBaseUrl+id);
             baseResponse.setStatus(HttpStatus.OK);
             baseResponse.setMessage("Product found");
             if (product.getDescription() == null || product.getDescription().isEmpty()) {
@@ -73,7 +72,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public MultipleProductResponse getAllProducts() {
         MultipleProductResponse  baseResponse = new MultipleProductResponse();
-        correlationMatrixBaseImageUrl = serverIpConfig.getServerIp()+":"+correlationMatrixBaseImageUrl;
         try{
             ArrayList flaskResponse = (ArrayList) client.getAllProducts();
             ArrayList<Product> products = new ArrayList<>();
@@ -86,7 +84,7 @@ public class ProductServiceImpl implements ProductService {
                 if (product.getDescription() == null || product.getDescription().isEmpty()) {
                     product.setDescription(LibraryFunctions.buildDescription(product.getName()));
                 }
-                product.setImageUrl(correlationMatrixBaseImageUrl+product.getId());
+                product.setImageUrl(flaskImgBaseUrl+product.getId());
                 product.setAccuracy(LibraryFunctions.getAccuracyPercentage(product.getAccuracy()));
                 products.add(product);
             }
