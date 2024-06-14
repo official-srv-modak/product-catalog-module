@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-catalog-module
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: product-catalog-module
+  template:
+    metadata:
+      labels:
+        app: product-catalog-module
+    spec:
+      containers:
+        - name: product-catalog-module
+          image: 339712975523.dkr.ecr.us-east-1.amazonaws.com/product-catalog-module:latest
+          ports:
+            - containerPort: 8080

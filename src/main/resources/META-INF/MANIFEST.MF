@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: com.modakdev.product_catalog_module.ProductCatalogModuleAppl
+ ication
+
