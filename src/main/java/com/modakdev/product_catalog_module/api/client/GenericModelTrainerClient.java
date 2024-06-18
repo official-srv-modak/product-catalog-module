@@ -58,7 +58,7 @@ public class GenericModelTrainerClient {
 
     public ResponseEntity<InputStreamResource> callCorrelationImgPlotApi(String modelName, String trainsetPath) throws IOException {
         String requestUrl = UriComponentsBuilder.fromHttpUrl(baseUrl)
-                .path("//get-correlation-matrix")
+                .path("/get-correlation-matrix")
                 .queryParam("model_name", modelName)
                 .queryParam("trainset_name", trainsetPath)
                 .toUriString();

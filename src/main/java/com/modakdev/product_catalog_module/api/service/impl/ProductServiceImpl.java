@@ -2,16 +2,17 @@ package com.modakdev.product_catalog_module.api.service.impl;
 
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.modakdev.lib.LibraryFunctions;
 import com.modakdev.model.pojo.Product;
 import com.modakdev.product_catalog_module.api.client.GenericModelTrainerClient;
 import com.modakdev.product_catalog_module.api.service.ProductService;
-import com.modakdev.product_catalog_module.config.ServerIpConfig;
+import com.modakdev.request.TrainingMultipartRequest;
 import com.modakdev.response.MultipleProductResponse;
 import com.modakdev.response.SingleProductResponse;
-import org.json.simple.JSONArray;
+import com.modakdev.response.TrainModelResponse;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
@@ -20,25 +21,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 @Service
 public class ProductServiceImpl implements ProductService {
 
+    private static final Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
+
     GenericModelTrainerClient client;
 
-    private final ServerIpConfig serverIpConfig;
 
     @Value("${flask.img.base-url}")
     String flaskImgBaseUrl;
 
     @Autowired
-    public ProductServiceImpl(GenericModelTrainerClient client, ServerIpConfig serverIpConfig) {
+    public ProductServiceImpl(GenericModelTrainerClient client) {
         this.client = client;
-        this.serverIpConfig = serverIpConfig;
     }
 
     @Override
@@ -109,5 +108,10 @@ public class ProductServiceImpl implements ProductService {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public TrainModelResponse trainModel(TrainingMultipartRequest request) {
+        return null;
     }
 }
