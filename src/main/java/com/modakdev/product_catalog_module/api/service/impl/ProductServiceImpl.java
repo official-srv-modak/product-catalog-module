@@ -7,6 +7,7 @@ import com.modakdev.model.pojo.Product;
 import com.modakdev.product_catalog_module.api.client.GenericModelTrainerClient;
 import com.modakdev.product_catalog_module.api.service.ProductService;
 import com.modakdev.request.TrainingMultipartRequest;
+import com.modakdev.response.MDBaseResponse;
 import com.modakdev.response.MultipleProductResponse;
 import com.modakdev.response.SingleProductResponse;
 import com.modakdev.response.TrainModelResponse;
@@ -19,8 +20,12 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
@@ -31,6 +36,11 @@ public class ProductServiceImpl implements ProductService {
 
     GenericModelTrainerClient client;
 
+    @Value("${commons.trainset.file-path}")
+    String TRAIN_UPLOAD_DIR;
+
+    @Value("${commons.testset.file-path}")
+    String TEST_UPLOAD_DIR;
 
     @Value("${flask.img.base-url}")
     String flaskImgBaseUrl;
@@ -110,8 +120,40 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
+
+
     @Override
     public TrainModelResponse trainModel(TrainingMultipartRequest request) {
         return null;
+    }
+
+    @Override
+    public MDBaseResponse uploadFiles(MultipartFile trainFile, MultipartFile testFile) {
+        if (testFile.isEmpty() || trainFile.isEmpty()) {
+            return new MDBaseResponse(HttpStatus.BAD_REQUEST, "Please select a file!");
+        } else {
+            try {
+                // Ensure the upload directory exists
+                uploadTransfers(trainFile, TRAIN_UPLOAD_DIR);
+                uploadTransfers(testFile, TEST_UPLOAD_DIR);
+
+                return new MDBaseResponse(HttpStatus.OK, "Files uploaded successfully");
+            } catch (IOException e) {
+                return new MDBaseResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to upload file: " + e.getMessage());
+            }
+        }
+    }
+
+    private static void uploadTransfers(MultipartFile trainFile, String UPLOAD_DIR) throws IOException {
+        Path path = Paths.get(UPLOAD_DIR);
+        File uploadDir = path.toFile();
+
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs();
+        }
+        // Save the file locally
+        String trainFilePath = UPLOAD_DIR + trainFile.getOriginalFilename();
+        File dest = new File(trainFilePath);
+        trainFile.transferTo(dest.toPath());
     }
 }

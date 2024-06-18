@@ -27,14 +27,9 @@ public class ProductController {
 
     private final ProductServiceImpl productService;
 
-    private final String TRAIN_UPLOAD_DIR, TEST_UPLOAD_DIR;
-
-
     @Autowired
-    public ProductController(ProductServiceImpl productService, @Value("${commons.trainset.file-path}")String TRAIN_UPLOAD_DIR, @Value("${commons.testset.file-path}")String TEST_UPLOAD_DIR) {
+    public ProductController(ProductServiceImpl productService) {
         this.productService = productService;
-        this.TRAIN_UPLOAD_DIR = TRAIN_UPLOAD_DIR;
-        this.TEST_UPLOAD_DIR = TEST_UPLOAD_DIR;
     }
 
     @GetMapping("/get-product/{id}")
@@ -68,31 +63,7 @@ public class ProductController {
 
     @PostMapping("/upload-files")
     public MDBaseResponse uploadFiles(@RequestParam("trainFile") MultipartFile trainFile, @RequestParam("testFile") MultipartFile testFile) {
-        if (testFile.isEmpty() || trainFile.isEmpty()) {
-            return new MDBaseResponse(HttpStatus.BAD_REQUEST, "Please select a file!");
-        } else {
-            try {
-                // Ensure the upload directory exists
-                uploadTransfers(trainFile, TRAIN_UPLOAD_DIR);
-                uploadTransfers(testFile, TEST_UPLOAD_DIR);
-
-                return new MDBaseResponse(HttpStatus.OK, "Files uploaded successfully");
-            } catch (IOException e) {
-                return new MDBaseResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to upload file: " + e.getMessage());
-            }
-        }
+        return productService.uploadFiles(trainFile,testFile);
     }
 
-    private static void uploadTransfers(MultipartFile trainFile, String UPLOAD_DIR) throws IOException {
-        Path path = Paths.get(UPLOAD_DIR);
-        File uploadDir = path.toFile();
-
-        if (!uploadDir.exists()) {
-            uploadDir.mkdirs();
-        }
-        // Save the file locally
-        String trainFilePath = UPLOAD_DIR + trainFile.getOriginalFilename();
-        File dest = new File(trainFilePath);
-        trainFile.transferTo(dest.toPath());
-    }
 }
