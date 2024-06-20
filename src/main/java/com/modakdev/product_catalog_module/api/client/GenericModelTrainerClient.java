@@ -1,5 +1,7 @@
 package com.modakdev.product_catalog_module.api.client;
 
+import com.modakdev.request.TrainingRequest;
+import com.modakdev.response.TrainModelResponse;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -81,5 +83,17 @@ public class GenericModelTrainerClient {
         } else {
             return ResponseEntity.status(response.getStatusLine().getStatusCode()).build();
         }
+    }
+
+    public Object trainModel(TrainingRequest request){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        String requestUrl = UriComponentsBuilder.fromHttpUrl(baseUrl)
+                .path("/train-model")
+                .toUriString();
+
+        ResponseEntity<Object> response = restTemplate.postForEntity(requestUrl, request, Object.class);
+        return response.getBody();
     }
 }

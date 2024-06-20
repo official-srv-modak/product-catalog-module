@@ -6,7 +6,7 @@ import com.modakdev.lib.LibraryFunctions;
 import com.modakdev.model.pojo.Product;
 import com.modakdev.product_catalog_module.api.client.GenericModelTrainerClient;
 import com.modakdev.product_catalog_module.api.service.ProductService;
-import com.modakdev.request.TrainingMultipartRequest;
+import com.modakdev.request.TrainingRequest;
 import com.modakdev.response.MDBaseResponse;
 import com.modakdev.response.MultipleProductResponse;
 import com.modakdev.response.SingleProductResponse;
@@ -120,11 +120,14 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-
-
     @Override
-    public TrainModelResponse trainModel(TrainingMultipartRequest request) {
-        return null;
+    public Object trainModel(TrainingRequest request) {
+        Object response = client.trainModel(request);
+
+        JSONObject jsonObject = LibraryFunctions.convertToJSONObject((LinkedHashMap<String, Object>)response);
+        //LibraryFunctions.fixLists(jsonObject);
+
+        return jsonObject;
     }
 
     @Override
