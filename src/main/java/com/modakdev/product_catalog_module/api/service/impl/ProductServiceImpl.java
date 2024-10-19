@@ -124,7 +124,7 @@ public class ProductServiceImpl implements ProductService {
         Object response = client.trainModel(request);
 
         JSONObject jsonObject = LibraryFunctions.convertToJSONObject((LinkedHashMap<String, Object>)response);
-        //LibraryFunctions.fixLists(jsonObject);
+        LibraryFunctions.fixLists(jsonObject);
 
         return jsonObject;
     }
