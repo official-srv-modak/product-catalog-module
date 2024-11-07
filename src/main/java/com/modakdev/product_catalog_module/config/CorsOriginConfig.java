@@ -14,7 +14,7 @@ public class CorsOriginConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
 
         registry.addMapping("/**")
-                .allowedOrigins(corsOrigin) // Replace with your React app's URL
+                .allowedOrigins(corsOrigin)
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("*")
                 .allowCredentials(true);
